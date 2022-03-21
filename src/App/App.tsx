@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getAuth, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { 
-  HashRouter as Router,
+  BrowserRouter as Router,
   Routes,
   Route
 } from 'react-router-dom';

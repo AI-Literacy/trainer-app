@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import './NewGame.css';
+import styles from './NewGame.module.css';
 
 const NewGame = () => {
     const [dimensions, setDimensions] = useState<number[]>([30, 30]);
@@ -21,7 +21,7 @@ const NewGame = () => {
                         </label>
                         <input 
                             type="number" 
-                            className="input" 
+                            className={styles["input"]} 
                             name="width" 
                             value={dimensions[0]}
                             onChange={e => setDimensions([parseInt(e.target.value), dimensions[1]])}
@@ -35,7 +35,7 @@ const NewGame = () => {
                         </label>
                         <input 
                             type="number" 
-                            className="input" 
+                            className={styles["input"]} 
                             name="height" 
                             value={dimensions[1]}
                             onChange={e => setDimensions([dimensions[0], parseInt(e.target.value)])}
@@ -49,7 +49,7 @@ const NewGame = () => {
                         </label>
                         <input 
                             type="number" 
-                            className="input" 
+                            className={styles["input"]} 
                             name="rounds" 
                             value={rounds}
                             onChange={e => setRounds(parseInt(e.target.value))}
@@ -62,7 +62,7 @@ const NewGame = () => {
                             <span className="text-gray-200 text-xl">Generation pattern</span>
                         </label>
                         <select 
-                            className="input" 
+                            className={styles["input"]} 
                             name="generation"
                             value={generation}
                             onChange={e => setGeneration(e.target.value)}
