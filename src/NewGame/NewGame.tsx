@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import styles from './NewGame.module.css';
+import styles from '../App/Form.module.css';
 
 const NewGame = () => {
     const [dimensions, setDimensions] = useState<number[]>([30, 30]);
@@ -21,7 +21,7 @@ const NewGame = () => {
                         </label>
                         <input 
                             type="number" 
-                            className={styles["input"]} 
+                            className={`${styles["input"]} w-full`} 
                             name="width" 
                             value={dimensions[0]}
                             onChange={e => setDimensions([parseInt(e.target.value), dimensions[1]])}
@@ -35,7 +35,7 @@ const NewGame = () => {
                         </label>
                         <input 
                             type="number" 
-                            className={styles["input"]} 
+                            className={`${styles["input"]} w-full`} 
                             name="height" 
                             value={dimensions[1]}
                             onChange={e => setDimensions([dimensions[0], parseInt(e.target.value)])}
@@ -49,7 +49,7 @@ const NewGame = () => {
                         </label>
                         <input 
                             type="number" 
-                            className={styles["input"]} 
+                            className={`${styles["input"]} w-full`} 
                             name="rounds" 
                             value={rounds}
                             onChange={e => setRounds(parseInt(e.target.value))}
@@ -62,7 +62,7 @@ const NewGame = () => {
                             <span className="text-gray-200 text-xl">Generation pattern</span>
                         </label>
                         <select 
-                            className={styles["input"]} 
+                            className={`${styles["input"]} w-full`} 
                             name="generation"
                             value={generation}
                             onChange={e => setGeneration(e.target.value)}
@@ -77,13 +77,7 @@ const NewGame = () => {
                     <div className="mt-10">
                         <button 
                             onClick={handleSubmit} 
-                            className="
-                                border border-transparent 
-                                text-base font-medium 
-                                rounded-md text-white 
-                                bg-indigo-600 hover:bg-indigo-700 
-                                md:py-2 md:text-lg md:px-6
-                            "
+                            className={styles['submit']}
                         >
                             Submit
                         </button>
