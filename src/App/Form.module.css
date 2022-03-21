@@ -13,3 +13,8 @@
     @apply py-2 px-4;
     @apply md:py-2 md:text-lg md:px-6;
 }
+
+.error {
+    @apply ring ring-red-700 ring-opacity-100;
+    @apply focus:ring-red-700 focus:ring-opacity-100;
+}
