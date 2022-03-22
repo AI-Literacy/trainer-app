@@ -1,6 +1,6 @@
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 
-export async function validateGameCode(newGameCode: string) {
+export function validateGameCodeStructure(newGameCode: string) {
   // Long enough
   if (newGameCode.length < 5) {
     return 'Game code must be at least five characters';
@@ -10,6 +10,13 @@ export async function validateGameCode(newGameCode: string) {
   if (/[^A-Z0-9]/.test(newGameCode)) {
     return 'Game code may only contain uppercase letters and numbers';
   }
+
+  return '';
+}
+
+export async function validateGameCode(newGameCode: string) {
+  const fb = validateGameCodeStructure(newGameCode);
+  if (fb) return fb;
 
   // Already in use?
   const db = getFirestore();

@@ -16,7 +16,7 @@ const NewGame = () => {
   gcChange$.subscribe(setGameCode);
   gcChange$
     .pipe(
-      debounceTime(1000),
+      debounceTime(500),
       mergeMap(async (gc: string) => await validateGameCode(gc))
     )
     .subscribe(setGCFeedback)

@@ -1,6 +1,7 @@
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import React, { useState } from 'react';
 import styles from '../App/Form.module.css';
+import { validateGameCodeStructure } from '../NewGame/NewGameUtils';
 
 const JoinGame = () => {
   const [gameCode, setGameCode] = useState<string>('');
@@ -8,7 +9,15 @@ const JoinGame = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Valid game code, structurally
+    const fb = validateGameCodeStructure(gameCode);
+    if (fb) {
+      setFeedback(`Error: ${fb}`)
+      return;
+    }
 
+    // Make sure game exists
     const db = getFirestore();
     const gameRef = await getDoc(doc(db, 'games', gameCode));
 
@@ -33,7 +42,7 @@ const JoinGame = () => {
               p-3 mb-3
               flex flex-row justify-between
             ">
-              <p>Error: Game does not exist</p>
+              <p>{feedback}</p>
             </div>
           ) : null
         }
