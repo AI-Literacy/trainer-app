@@ -8,12 +8,14 @@ import {
 } from 'react-router-dom';
 
 import './App.css';
+
 import Nav from '../Nav';
 import UserContext from './UserContext';
 import LoadingOverlay from '../LoadingOverlay';
 import MainPage from '../MainPage';
 import NewGame from '../NewGame';
 import JoinGame from '../JoinGame';
+import PlayGame from '../PlayGame';
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -61,6 +63,7 @@ function App() {
           <Route path='/' element={<MainPage />} />
           <Route path='/new-game' element={<NewGame />} />
           <Route path='/join-game' element={<JoinGame />} />
+          <Route path='/game/:gid' element={<PlayGame />} />
         </Routes>
       </Router>
     </UserContext.Provider>

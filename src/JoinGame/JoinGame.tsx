@@ -1,11 +1,18 @@
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../App/Form.module.css';
 import { validateGameCodeStructure } from '../NewGame/NewGameUtils';
 
 const JoinGame = () => {
   const [gameCode, setGameCode] = useState<string>('');
   const [feedback, setFeedback] = useState<string>('');
+
+  const navigate = useNavigate();
+  const handleRedirect = useCallback(
+    () => navigate(`/game/${gameCode}`, { replace: true }),
+    [navigate, gameCode]
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +31,7 @@ const JoinGame = () => {
     if (!gameRef.exists()) {
       setFeedback('Error: Game does not exist');
     } else {
-      alert('Correct! Redirecting');
+      handleRedirect();
     }
   };
 
