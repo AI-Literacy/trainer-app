@@ -1,11 +1,27 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
+
+import { debounceTime, Subject } from "rxjs";
+import { mergeMap } from "rxjs/operators";
+
+import { validateGameCode } from "./NewGameUtils";
 import styles from '../App/Form.module.css';
-import { validateGCFlow } from "./NewGameUtils";
+
 
 const NewGame = () => {
+  const gcChange$ = new Subject<string>();
   const [gameCode, setGameCode] = useState<string>("");
-  const [gcFeedback, setGCFeedback] = useState<string>('');
+  const [gcFeedback, setGCFeedback] = useState<string>("");
 
+  // Two subscriptions, to update the state and set feedback
+  gcChange$.subscribe(setGameCode);
+  gcChange$
+    .pipe(
+      debounceTime(1000),
+      mergeMap(async (gc: string) => await validateGameCode(gc))
+    )
+    .subscribe(setGCFeedback)
+
+  // Other state components (TODO: Anika & Isabel remove)
   const [dimensions, setDimensions] = useState<number[]>([30, 30]);
   const [rounds, setRounds] = useState<number>(3);
   const [generation, setGeneration] = useState<string>('10% spawn probability');
@@ -15,16 +31,7 @@ const NewGame = () => {
 
     const gameCodeValid = await validateGameCode(gameCode);
     if (!gameCodeValid) return;
-
-
   }
-
-  const handleGameCodeUpdate = (e: ChangeEvent<HTMLInputElement>) => {
-    setGameCode(e.target.value);
-    validateGameCode(e.target.value);
-  }
-
-  const validateGameCode = validateGCFlow(setGCFeedback);
 
   return (
     <div className="app w-4/5 mt-8 mx-auto flex flex-row">
@@ -49,7 +56,7 @@ const NewGame = () => {
               `} 
               name="game-code" 
               value={gameCode}
-              onChange={handleGameCodeUpdate}
+              onChange={(e) => gcChange$.next(e.target.value)}
             />
           </div>
           <div className="mb-4">
