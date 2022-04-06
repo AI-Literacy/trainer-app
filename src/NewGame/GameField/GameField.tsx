@@ -4,7 +4,7 @@ import { debounceTime, Subject } from "rxjs";
 import { Field } from "./GameFieldInterface";
 import styles from '../../App/Form.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCross, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface GameFieldProps {
   field: Field,
