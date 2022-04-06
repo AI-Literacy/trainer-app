@@ -2,15 +2,20 @@ import { FormEvent, useState } from "react";
 
 import { debounceTime, Subject } from "rxjs";
 import { mergeMap } from "rxjs/operators";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { v4 as uuid } from 'uuid';
 
 import { validateGameCode } from "./NewGameUtils";
 import styles from '../App/Form.module.css';
+import GameField, { Field } from "./GameField";
 
 
 const NewGame = () => {
   const gcChange$ = new Subject<string>();
   const [gameCode, setGameCode] = useState<string>("");
   const [gcFeedback, setGCFeedback] = useState<string>("");
+  const [fields, setFields] = useState<{ [x: string]: Field }>({});
 
   // Two subscriptions, to update the state and set feedback
   gcChange$.subscribe(setGameCode);
@@ -21,16 +26,30 @@ const NewGame = () => {
     )
     .subscribe(setGCFeedback)
 
-  // Other state components (TODO: Anika & Isabel remove)
-  const [dimensions, setDimensions] = useState<number[]>([30, 30]);
-  const [rounds, setRounds] = useState<number>(3);
-  const [generation, setGeneration] = useState<string>('10% spawn probability');
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const gameCodeValid = await validateGameCode(gameCode);
     if (!gameCodeValid) return;
+  }
+
+  const handleFieldChange = (idx: string) => {
+    return (newVal: Field) => setFields({ 
+      ...fields,    // keep the old fields
+      [idx]: newVal // update one property
+    })
+  }
+
+  const addNewField = () => setFields({ 
+    ...fields, 
+    [uuid()]: { name: '', min: 0, max: 10 }  // reasonable default
+  });
+
+  const handleRemoveField = (idx: string) => () => {
+    let newFields = Object.assign({}, fields);
+    delete newFields[idx];
+
+    setFields(newFields)
   }
 
   return (
@@ -59,66 +78,25 @@ const NewGame = () => {
               onChange={(e) => gcChange$.next(e.target.value)}
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="width">
-              <span className="text-gray-200 text-xl">Grid width</span>
-            </label>
-            <input 
-              type="number" 
-              className={`${styles["input"]} w-full`} 
-              name="width" 
-              value={dimensions[0]}
-              onChange={e => setDimensions([parseInt(e.target.value), dimensions[1]])}
-              min={10}
-              max={60}
-            ></input>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="height">
-              <span className="text-gray-200 text-xl">Grid height</span>
-            </label>
-            <input 
-              type="number" 
-              className={`${styles["input"]} w-full`} 
-              name="height" 
-              value={dimensions[1]}
-              onChange={e => setDimensions([dimensions[0], parseInt(e.target.value)])}
-              min={10}
-              max={60}
-            ></input>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="rounds">
-              <span className="text-gray-200 text-xl">Number of rounds</span>
-            </label>
-            <input 
-              type="number" 
-              className={`${styles["input"]} w-full`} 
-              name="rounds" 
-              value={rounds}
-              onChange={e => setRounds(parseInt(e.target.value))}
-              min={3}
-              max={10}
-            ></input>
-          </div>
-          <div className="mb-4">
-            <label htmlFor="generation">
-              <span className="text-gray-200 text-xl">Generation pattern</span>
-            </label>
-            <select 
-              className={`${styles["input"]} w-full`} 
-              name="generation"
-              value={generation}
-              onChange={e => setGeneration(e.target.value)}
-            >
-              <option>10% spawn probability</option>
-              <option>30% spawn probability</option>
-              <option>50% spawn probability</option>
-              <option>Gaussian</option>
-              <option>Checkerboard</option>
-            </select>
-          </div>
+          {
+            Object.entries(fields).map(
+              ([idx, val]) => (
+                <GameField
+                  key={idx}
+                  field={val}
+                  setField={handleFieldChange(idx)}
+                  deleteSelf={handleRemoveField(idx)}
+                />
+              )
+            )
+          }
           <div className="mt-10">
+            <button 
+              onClick={addNewField}
+              className={`${styles['submit']} mr-4`}
+            >
+              <FontAwesomeIcon icon={faCirclePlus} className="mr-2" /> Add Field
+            </button>
             <button 
               onClick={handleSubmit} 
               className={styles['submit']}

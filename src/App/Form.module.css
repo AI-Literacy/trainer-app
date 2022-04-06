@@ -6,6 +6,14 @@
     @apply text-black;
 }
 
+.input-inline {
+    @apply inline-block ml-2 mr-2;
+    @apply rounded-md;
+    @apply border-gray-300 shadow-sm;
+    @apply focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+    @apply text-black;
+}
+
 .submit {
     @apply border border-transparent;
     @apply text-base font-medium rounded-md;
