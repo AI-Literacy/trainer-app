@@ -1,4 +1,5 @@
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from "firebase/firestore";
+import { Field } from "./GameField";
 
 export function validateGameCodeStructure(newGameCode: string) {
   // Long enough
@@ -26,4 +27,52 @@ export async function validateGameCode(newGameCode: string) {
   }
 
   return '';
+}
+
+
+export async function makeNewGame(
+  code: string,
+  numObjects: number,
+  objectTemplates: { [x: string]: Field },
+  uid: string
+): Promise<boolean> {
+  // Validate parameters
+  const gameCodeError = await validateGameCode(code);
+  if (gameCodeError) return false;
+
+  if (!(10 <= numObjects && numObjects <= 100)) return false;
+  
+  const minMaxValid = Object.values(objectTemplates)
+    .map(field => field.min < field.max)
+    .reduce((a, b) => a && b, true);
+  if (!minMaxValid) return false;
+
+  // Push the game to the database
+  const db = getFirestore();
+  await setDoc(
+    doc(db, 'users', uid),
+    { activeGame: code },
+    { merge: true }
+  )
+
+  const totalPoints = Object.values(objectTemplates)
+    .map(template => (template.min + template.max) / 2)
+    .reduce((a, b) => a + b);
+
+  await setDoc(
+    doc(db, 'games', code),
+    {
+      owner: uid,
+      createdAt: serverTimestamp(),
+      numObjects,
+      totalPoints
+    }
+  );
+
+  await setDoc(
+    doc(db, 'games', code, 'private', 'objectTemplates'),
+    objectTemplates
+  )
+
+  return true;
 }

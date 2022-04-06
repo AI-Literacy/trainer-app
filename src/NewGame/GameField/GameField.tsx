@@ -16,7 +16,6 @@ const GameField = ({ field, setField, deleteSelf }: GameFieldProps) => {
   const valChange$ = new Subject<Field>();
   
   valChange$
-    .pipe(debounceTime(500))
     .subscribe(setField);
 
   const generateEmission = (propName: string, prep: (s: string) => any = (s) => s) => 

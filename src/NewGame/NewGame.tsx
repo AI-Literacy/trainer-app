@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 
 import { debounceTime, Subject } from "rxjs";
 import { mergeMap } from "rxjs/operators";
@@ -6,16 +6,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from 'uuid';
 
-import { validateGameCode } from "./NewGameUtils";
+import { makeNewGame, validateGameCode } from "./NewGameUtils";
 import styles from '../App/Form.module.css';
 import GameField, { Field } from "./GameField";
+import { UserContext } from "../App";
+import { useNavigate } from "react-router-dom";
 
 
 const NewGame = () => {
   const gcChange$ = new Subject<string>();
   const [gameCode, setGameCode] = useState<string>("");
   const [gcFeedback, setGCFeedback] = useState<string>("");
-  const [fields, setFields] = useState<{ [x: string]: Field }>({});
+  const [numObjects, setNumObjects] = useState<number>(20);
+  const [fields, setFields] = useState<{ [x: string]: Field }>({
+    [uuid()]: { name: '', min: 0, max: 10 }
+  });
 
   // Two subscriptions, to update the state and set feedback
   gcChange$.subscribe(setGameCode);
@@ -26,11 +31,17 @@ const NewGame = () => {
     )
     .subscribe(setGCFeedback)
 
+
+  const user = useContext(UserContext);
+  const navigate = useNavigate();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const gameCodeValid = await validateGameCode(gameCode);
-    if (!gameCodeValid) return;
+    const success = await makeNewGame(
+      gameCode, numObjects, fields, user!.uid
+    );
+
+    if (success) navigate(`/game/${gameCode}`);
   }
 
   const handleFieldChange = (idx: string) => {
@@ -54,7 +65,7 @@ const NewGame = () => {
 
   return (
     <div className="app w-4/5 mt-8 mx-auto flex flex-row">
-      <div className="flex flex-col w-full md:w-1/2">
+      <div className="flex flex-col w-full h-full md:w-1/2">
         <h1 className="text-4xl mb-8">Create a new game</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -76,6 +87,20 @@ const NewGame = () => {
               name="game-code" 
               value={gameCode}
               onChange={(e) => gcChange$.next(e.target.value)}
+            />
+          </div>
+          <div className="mb-6">
+            <label htmlFor="num-objects">
+              <span className="text-gray-200 text-xl">Number of objects to generate</span>
+            </label>
+            <input 
+              type="number" 
+              className={`${styles["input"]} w-full `} 
+              name="num-objects" 
+              value={numObjects}
+              onChange={(e) => setNumObjects(parseInt(e.target.value))}
+              min={10}
+              max={100}
             />
           </div>
           {
