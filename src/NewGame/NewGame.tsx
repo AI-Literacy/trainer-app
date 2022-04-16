@@ -59,6 +59,13 @@ const NewGame = () => {
     [uuid()]: { name: '', min: 0, max: 10 }  // reasonable default
   });
 
+  const loadSample = () => {
+    // get option (using DOM?)
+    // get fields from firebase 
+    // load fields based off option
+    return;
+  }
+
   const handleRemoveField = (idx: string) => () => {
     let newFields = Object.assign({}, fields);
     delete newFields[idx];
@@ -102,7 +109,7 @@ const NewGame = () => {
                 <option value="presentation">Team Presentation</option>
             </select>
             <button 
-              onClick={addNewField}
+              onClick={loadSample}
               className={`${styles['submit']} mr-4`}
             >
               <FontAwesomeIcon icon={faUpload} className="mr-2" /> Load
@@ -132,7 +139,7 @@ const NewGame = () => {
               name="num-objects-view" 
               value={numObjectsView}
               onChange={(e) => setNumObjectsView(parseInt(e.target.value))}
-              min={10}
+              min={1}
               max={100}
             />
           </div>
@@ -146,8 +153,8 @@ const NewGame = () => {
               name="num-view-students" 
               value={numPlayerView}
               onChange={(e) => setNumPlayerView(parseInt(e.target.value))}
-              min={10}
-              max={100}
+              min={1}
+              max={10}
             />
           </div>
           {

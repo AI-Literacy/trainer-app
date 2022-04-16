@@ -43,8 +43,14 @@ export async function makeNewGame(
   if (gameCodeError) return false;
 
   if (!(10 <= numObjects && numObjects <= 100)) return false;
+  if (!(1 <= numObjectsView && numObjectsView <= 100)) return false;
+  if (!(1 <= numPlayerView && numPlayerView <= 10)) return false;
 
-  // add validation for views
+  // Calculate number of cards - assuming there are 25 students
+  const numStudents = 25;
+
+  if (numObjectsView > numStudents) return false;
+  let numCards = Math.floor((numPlayerView * numStudents)/numObjectsView);
   
   const minMaxValid = Object.values(objectTemplates)
     .map(field => field.min < field.max)
