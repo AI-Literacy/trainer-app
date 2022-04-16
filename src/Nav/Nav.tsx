@@ -1,12 +1,18 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../App/UserContext';
+import { getAuth } from 'firebase/auth';
 
 const Nav = () => {
   const user = useContext(UserContext);
 
   if (!user) {
     return null;
+  }
+
+  function signOutFn(){
+    const auth = getAuth();
+    auth.signOut();
   }
 
   return (
@@ -27,6 +33,9 @@ const Nav = () => {
             className="rounded-full h-8 w-8 mr-2"
           />
           {user.displayName}
+        </div>
+        <div className="flex flex-row items-center ml-5 mr-5 hover:cursor-pointer">
+                <button onClick={signOutFn}>Logout</button>
         </div>
       </div>
     </nav>
