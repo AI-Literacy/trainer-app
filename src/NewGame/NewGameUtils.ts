@@ -33,6 +33,8 @@ export async function validateGameCode(newGameCode: string) {
 export async function makeNewGame(
   code: string,
   numObjects: number,
+  numObjectsView: number,
+  numPlayerView: number,
   objectTemplates: { [x: string]: Field },
   uid: string
 ): Promise<boolean> {
@@ -41,6 +43,8 @@ export async function makeNewGame(
   if (gameCodeError) return false;
 
   if (!(10 <= numObjects && numObjects <= 100)) return false;
+
+  // add validation for views
   
   const minMaxValid = Object.values(objectTemplates)
     .map(field => field.min < field.max)

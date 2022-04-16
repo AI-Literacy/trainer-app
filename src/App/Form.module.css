@@ -26,3 +26,20 @@
     @apply ring ring-red-700 ring-opacity-100;
     @apply focus:ring-red-700 focus:ring-opacity-100;
 }
+
+.select{
+    @apply form-select;
+    @apply appearance-none;
+    @apply px-3;
+    @apply py-1.5;
+    @apply text-base;
+    @apply font-normal;
+    @apply text-gray-700;
+    @apply bg-white bg-clip-padding bg-no-repeat;
+    @apply border border-solid border-gray-300;
+    @apply rounded;
+    @apply transition;
+    @apply ease-in-out;
+    @apply mt-2;
+    @apply focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+}

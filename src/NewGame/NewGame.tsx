@@ -4,6 +4,7 @@ import { debounceTime, Subject } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from 'uuid';
 
 import { makeNewGame, validateGameCode } from "./NewGameUtils";
@@ -18,6 +19,8 @@ const NewGame = () => {
   const [gameCode, setGameCode] = useState<string>("");
   const [gcFeedback, setGCFeedback] = useState<string>("");
   const [numObjects, setNumObjects] = useState<number>(20);
+  const [numObjectsView, setNumObjectsView] = useState<number>(3);
+  const [numPlayerView, setNumPlayerView] = useState<number>(5);
   const [fields, setFields] = useState<{ [x: string]: Field }>({
     [uuid()]: { name: '', min: 0, max: 10 }
   });
@@ -38,7 +41,7 @@ const NewGame = () => {
     e.preventDefault();
 
     const success = await makeNewGame(
-      gameCode, numObjects, fields, user!.uid
+      gameCode, numObjects, numObjectsView, numPlayerView, fields, user!.uid
     );
 
     if (success) navigate(`/game/${gameCode}`);
@@ -62,7 +65,8 @@ const NewGame = () => {
 
     setFields(newFields)
   }
-
+  
+  /* TODO: fix margins of Load a sample, change default in input*/
   return (
     <div className="app w-4/5 mt-8 mx-auto flex flex-row">
       <div className="flex flex-col w-full h-full md:w-1/2">
@@ -89,6 +93,21 @@ const NewGame = () => {
               onChange={(e) => gcChange$.next(e.target.value)}
             />
           </div>
+          <div className="mb-3">
+            <select className= {`${styles['select']}`} aria-label="Disabled select example">
+                <option disabled selected>Load a sample game</option>
+                <option value="sports">Sports</option>
+                <option value="music">Music Band</option>
+                <option value="project">School Group Project</option>
+                <option value="presentation">Team Presentation</option>
+            </select>
+            <button 
+              onClick={addNewField}
+              className={`${styles['submit']} mr-4`}
+            >
+              <FontAwesomeIcon icon={faUpload} className="mr-2" /> Load
+            </button>
+          </div>
           <div className="mb-6">
             <label htmlFor="num-objects">
               <span className="text-gray-200 text-xl">Number of objects to generate</span>
@@ -99,6 +118,34 @@ const NewGame = () => {
               name="num-objects" 
               value={numObjects}
               onChange={(e) => setNumObjects(parseInt(e.target.value))}
+              min={10}
+              max={100}
+            />
+          </div>
+          <div className="mb-6">
+            <label htmlFor="num-objects-view">
+              <span className="text-gray-200 text-xl">Number of times each object is viewed</span>
+            </label>
+            <input 
+              type="number" 
+              className={`${styles["input"]} w-full `} 
+              name="num-objects-view" 
+              value={numObjectsView}
+              onChange={(e) => setNumObjectsView(parseInt(e.target.value))}
+              min={10}
+              max={100}
+            />
+          </div>
+          <div className="mb-6">
+            <label htmlFor="num-view-students">
+              <span className="text-gray-200 text-xl">Number of times a player views an object</span>
+            </label>
+            <input 
+              type="number" 
+              className={`${styles["input"]} w-full `} 
+              name="num-view-students" 
+              value={numPlayerView}
+              onChange={(e) => setNumPlayerView(parseInt(e.target.value))}
               min={10}
               max={100}
             />
