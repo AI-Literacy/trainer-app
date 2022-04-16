@@ -18,9 +18,8 @@ const NewGame = () => {
   const gcChange$ = new Subject<string>();
   const [gameCode, setGameCode] = useState<string>("");
   const [gcFeedback, setGCFeedback] = useState<string>("");
-  const [numObjects, setNumObjects] = useState<number>(20);
-  const [numObjectsView, setNumObjectsView] = useState<number>(3);
-  const [numPlayerView, setNumPlayerView] = useState<number>(5);
+  const [viewsPerCard, setViewsPerCard] = useState<number>(3);
+  const [cardsPerPlayer, setCardsPerPlayer] = useState<number>(5);
   const [fields, setFields] = useState<{ [x: string]: Field }>({
     [uuid()]: { name: '', min: 0, max: 10 }
   });
@@ -41,7 +40,7 @@ const NewGame = () => {
     e.preventDefault();
 
     const success = await makeNewGame(
-      gameCode, numObjects, numObjectsView, numPlayerView, fields, user!.uid
+      gameCode, viewsPerCard, cardsPerPlayer, fields, user!.uid
     );
 
     if (success) navigate(`/game/${gameCode}`);
@@ -116,43 +115,29 @@ const NewGame = () => {
             </button>
           </div>
           <div className="mb-6">
-            <label htmlFor="num-objects">
-              <span className="text-gray-200 text-xl">Number of objects to generate</span>
+            <label htmlFor="views-per-card">
+              <span className="text-gray-200 text-xl">Number of views per card</span>
             </label>
             <input 
               type="number" 
               className={`${styles["input"]} w-full `} 
-              name="num-objects" 
-              value={numObjects}
-              onChange={(e) => setNumObjects(parseInt(e.target.value))}
-              min={10}
-              max={100}
-            />
-          </div>
-          <div className="mb-6">
-            <label htmlFor="num-objects-view">
-              <span className="text-gray-200 text-xl">Number of times each object is viewed</span>
-            </label>
-            <input 
-              type="number" 
-              className={`${styles["input"]} w-full `} 
-              name="num-objects-view" 
-              value={numObjectsView}
-              onChange={(e) => setNumObjectsView(parseInt(e.target.value))}
+              name="views-per-card" 
+              value={viewsPerCard}
+              onChange={(e) => setViewsPerCard(parseInt(e.target.value))}
               min={1}
               max={100}
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="num-view-students">
-              <span className="text-gray-200 text-xl">Number of times a player views an object</span>
+            <label htmlFor="cards-per-player">
+              <span className="text-gray-200 text-xl">Number of cards per player</span>
             </label>
             <input 
               type="number" 
               className={`${styles["input"]} w-full `} 
-              name="num-view-students" 
-              value={numPlayerView}
-              onChange={(e) => setNumPlayerView(parseInt(e.target.value))}
+              name="cards-per-player" 
+              value={cardsPerPlayer}
+              onChange={(e) => setCardsPerPlayer(parseInt(e.target.value))}
               min={1}
               max={10}
             />

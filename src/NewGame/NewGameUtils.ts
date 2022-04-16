@@ -32,27 +32,25 @@ export async function validateGameCode(newGameCode: string) {
 
 export async function makeNewGame(
   code: string,
-  numObjects: number,
-  numObjectsView: number,
-  numPlayerView: number,
-  objectTemplates: { [x: string]: Field },
+  viewsPerCard: number,
+  cardsPerPlayer: number,
+  cardTemplates: { [x: string]: Field },
   uid: string
 ): Promise<boolean> {
   // Validate parameters
   const gameCodeError = await validateGameCode(code);
   if (gameCodeError) return false;
 
-  if (!(10 <= numObjects && numObjects <= 100)) return false;
-  if (!(1 <= numObjectsView && numObjectsView <= 100)) return false;
-  if (!(1 <= numPlayerView && numPlayerView <= 10)) return false;
+  if (!(1 <= viewsPerCard && viewsPerCard <= 100)) return false;
+  if (!(1 <= cardsPerPlayer && cardsPerPlayer <= 10)) return false;
 
   // Calculate number of cards - assuming there are 25 students
   const numStudents = 25;
 
-  if (numObjectsView > numStudents) return false;
-  let numCards = Math.floor((numPlayerView * numStudents)/numObjectsView);
+  if (viewsPerCard > numStudents) return false;
+  let numCards = Math.floor((cardsPerPlayer * numStudents)/viewsPerCard);
   
-  const minMaxValid = Object.values(objectTemplates)
+  const minMaxValid = Object.values(cardTemplates)
     .map(field => field.min < field.max)
     .reduce((a, b) => a && b, true);
   if (!minMaxValid) return false;
@@ -65,7 +63,7 @@ export async function makeNewGame(
     { merge: true }
   )
 
-  const totalPoints = Object.values(objectTemplates)
+  const totalPoints = Object.values(cardTemplates)
     .map(template => (template.min + template.max) / 2)
     .reduce((a, b) => a + b);
 
@@ -74,14 +72,14 @@ export async function makeNewGame(
     {
       owner: uid,
       createdAt: serverTimestamp(),
-      numObjects,
+      numCards,
       totalPoints
     }
   );
 
   await setDoc(
     doc(db, 'games', code, 'private', 'objectTemplates'),
-    objectTemplates
+    cardTemplates
   )
 
   return true;
