@@ -1,10 +1,20 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import UserContext from '../App/UserContext';
 import { getAuth } from 'firebase/auth';
+import styles from './Nav.module.css';
 
 const Nav = () => {
+  const [dropShowing, setDropShowing] = useState<boolean>(false);
   const user = useContext(UserContext);
+
+  useEffect(() => {
+    if (!dropShowing) return;
+
+    const closeDrop = () => setDropShowing(false);
+    window.addEventListener('click', closeDrop, false);
+    return () => window.removeEventListener('click', closeDrop);
+  }, [dropShowing]);
 
   if (!user) {
     return null;
@@ -26,17 +36,22 @@ const Nav = () => {
         <div className="flex-grow">
           {/* Eventually, put some links here */}
         </div>
-        <div className="flex flex-row items-center hover:cursor-pointer">
+        <button 
+          className="flex flex-row items-center hover:cursor-pointer"
+          onClick={() => setDropShowing(true)}
+        >
           <img
             src={user.photoURL!}
             alt=""
             className="rounded-full h-8 w-8 mr-2"
           />
           {user.displayName}
-        </div>
-        <div className="flex flex-row items-center ml-5 mr-5 hover:cursor-pointer">
-                <button onClick={signOutFn}>Logout</button>
-        </div>
+          <div className={`${styles.dropdown} ${ dropShowing ? '' : 'hidden' }`}>
+            <ul aria-label="options">
+              <li><button onClick={signOutFn}>Logout</button></li>
+            </ul>
+          </div>
+        </button>
       </div>
     </nav>
   )
