@@ -1,22 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Subject } from "rxjs";
 
-import { Field } from "./GameFieldInterface";
+import { GameField } from "../Template";
 import styles from '../../App/Form.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface GameFieldProps {
-  field: Field,
-  setField: (f: Field) => void,
+  field: GameField,
+  setField: (f: GameField) => void,
   deleteSelf: () => void
 }
+const valChange$ = new Subject<GameField>();
 
-const GameField = ({ field, setField, deleteSelf }: GameFieldProps) => {
-  const valChange$ = new Subject<Field>();
-  
-  valChange$
-    .subscribe(setField);
+const GameFieldInput = ({ field, setField, deleteSelf }: GameFieldProps) => {
+  useEffect(() => {
+    const s = valChange$
+      .subscribe(setField);
+
+    return () => s.unsubscribe();
+  });
 
   const generateEmission = (propName: string, prep: (s: string) => any = (s) => s) => 
     (e: React.FormEvent<HTMLInputElement>) => {
@@ -59,4 +62,4 @@ const GameField = ({ field, setField, deleteSelf }: GameFieldProps) => {
   );
 };
 
-export default GameField;
+export default GameFieldInput;

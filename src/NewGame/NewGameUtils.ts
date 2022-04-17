@@ -1,5 +1,5 @@
 import { doc, getDoc, getFirestore, serverTimestamp, setDoc } from "firebase/firestore";
-import { Field } from "./GameField";
+import { GameTemplate } from "./Template";
 
 export function validateGameCodeStructure(newGameCode: string) {
   // Long enough
@@ -31,55 +31,46 @@ export async function validateGameCode(newGameCode: string) {
 
 
 export async function makeNewGame(
-  code: string,
-  viewsPerCard: number,
-  cardsPerPlayer: number,
-  cardTemplates: { [x: string]: Field },
+  template: GameTemplate,
   uid: string
 ): Promise<boolean> {
-  // Validate parameters
-  const gameCodeError = await validateGameCode(code);
-  if (gameCodeError) return false;
+  const { gameCode, started, viewsPerCard, cardsPerPlayer, fields } = template;
 
+  // Validate parameters
+  const gameCodeError = await validateGameCode(gameCode);
+  if (gameCodeError) return false;
   if (!(1 <= viewsPerCard && viewsPerCard <= 100)) return false;
   if (!(1 <= cardsPerPlayer && cardsPerPlayer <= 10)) return false;
-
-  // Calculate number of cards - assuming there are 25 students
-  const numStudents = 25;
-
-  if (viewsPerCard > numStudents) return false;
-  let numCards = Math.floor((cardsPerPlayer * numStudents)/viewsPerCard);
   
-  const minMaxValid = Object.values(cardTemplates)
+  const minMaxValid = Object.values(fields)
     .map(field => field.min < field.max)
     .reduce((a, b) => a && b, true);
   if (!minMaxValid) return false;
+
+  if (started) return false;
 
   // Push the game to the database
   const db = getFirestore();
   await setDoc(
     doc(db, 'users', uid),
-    { activeGame: code },
+    { activeGame: gameCode },
     { merge: true }
   )
 
-  const totalPoints = Object.values(cardTemplates)
-    .map(template => (template.min + template.max) / 2)
-    .reduce((a, b) => a + b);
-
   await setDoc(
-    doc(db, 'games', code),
+    doc(db, 'games', gameCode),
     {
       owner: uid,
       createdAt: serverTimestamp(),
-      numCards,
-      totalPoints
+      viewsPerCard,
+      cardsPerPlayer,
+      started
     }
   );
 
   await setDoc(
-    doc(db, 'games', code, 'private', 'objectTemplates'),
-    cardTemplates
+    doc(db, 'games', gameCode, 'private', 'objectTemplates'),
+    fields
   )
 
   return true;

@@ -1,38 +1,45 @@
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 
 import { debounceTime, Subject } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { v4 as uuid } from 'uuid';
-
-import { makeNewGame, validateGameCode } from "./NewGameUtils";
-import styles from '../App/Form.module.css';
-import GameField, { Field } from "./GameField";
-import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
 
+import { UserContext } from "../App";
+import styles from '../App/Form.module.css';
+import GameFieldInput from "./GameFieldInput";
+import { makeNewGame, validateGameCode } from "./NewGameUtils";
+import { GameField } from "./Template";
+import LoadTemplateButton from "./LoadTemplateButton";
+
+const gcChange$ = new Subject<string>();
 
 const NewGame = () => {
-  const gcChange$ = new Subject<string>();
   const [gameCode, setGameCode] = useState<string>("");
   const [gcFeedback, setGCFeedback] = useState<string>("");
   const [viewsPerCard, setViewsPerCard] = useState<number>(3);
   const [cardsPerPlayer, setCardsPerPlayer] = useState<number>(5);
-  const [fields, setFields] = useState<{ [x: string]: Field }>({
+  const [fields, setFields] = useState<{ [x: string]: GameField }>({
     [uuid()]: { name: '', min: 0, max: 10 }
   });
 
   // Two subscriptions, to update the state and set feedback
-  gcChange$.subscribe(setGameCode);
-  gcChange$
-    .pipe(
-      debounceTime(500),
-      mergeMap(async (gc: string) => await validateGameCode(gc))
-    )
-    .subscribe(setGCFeedback)
-
+  useEffect(() => {
+    const s1 = gcChange$.subscribe(setGameCode);
+    const s2 = gcChange$
+      .pipe(
+        debounceTime(500),
+        mergeMap(async (gc: string) => await validateGameCode(gc))
+      )
+      .subscribe(setGCFeedback);
+    
+    return () => {
+      s1.unsubscribe();
+      s2.unsubscribe();
+    }
+  }, [setGameCode, setGCFeedback])
 
   const user = useContext(UserContext);
   const navigate = useNavigate();
@@ -40,14 +47,15 @@ const NewGame = () => {
     e.preventDefault();
 
     const success = await makeNewGame(
-      gameCode, viewsPerCard, cardsPerPlayer, fields, user!.uid
+      { gameCode, viewsPerCard, cardsPerPlayer, fields, started: false }, 
+      user!.uid
     );
 
     if (success) navigate(`/game/${gameCode}`);
   }
 
   const handleFieldChange = (idx: string) => {
-    return (newVal: Field) => setFields({ 
+    return (newVal: GameField) => setFields({ 
       ...fields,    // keep the old fields
       [idx]: newVal // update one property
     })
@@ -58,13 +66,6 @@ const NewGame = () => {
     [uuid()]: { name: '', min: 0, max: 10 }  // reasonable default
   });
 
-  const loadSample = () => {
-    // get option (using DOM?)
-    // get fields from firebase 
-    // load fields based off option
-    return;
-  }
-
   const handleRemoveField = (idx: string) => () => {
     let newFields = Object.assign({}, fields);
     delete newFields[idx];
@@ -72,7 +73,6 @@ const NewGame = () => {
     setFields(newFields)
   }
   
-  /* TODO: fix margins of Load a sample, change default in input*/
   return (
     <div className="app w-4/5 mt-8 mx-auto flex flex-row">
       <div className="flex flex-col w-full h-full md:w-1/2">
@@ -98,21 +98,6 @@ const NewGame = () => {
               value={gameCode}
               onChange={(e) => gcChange$.next(e.target.value)}
             />
-          </div>
-          <div className="mb-3">
-            <select className= {`${styles['select']}`} aria-label="Disabled select example">
-                <option disabled selected>Load a sample game</option>
-                <option value="sports">Sports</option>
-                <option value="music">Music Band</option>
-                <option value="project">School Group Project</option>
-                <option value="presentation">Team Presentation</option>
-            </select>
-            <button 
-              onClick={loadSample}
-              className={`${styles['submit']} mr-4`}
-            >
-              <FontAwesomeIcon icon={faUpload} className="mr-2" /> Load
-            </button>
           </div>
           <div className="mb-6">
             <label htmlFor="views-per-card">
@@ -145,7 +130,7 @@ const NewGame = () => {
           {
             Object.entries(fields).map(
               ([idx, val]) => (
-                <GameField
+                <GameFieldInput
                   key={idx}
                   field={val}
                   setField={handleFieldChange(idx)}
@@ -154,10 +139,11 @@ const NewGame = () => {
               )
             )
           }
-          <div className="mt-10">
+          <div className="mt-10 relative">
+            <LoadTemplateButton loadSample={setFields} />
             <button 
               onClick={addNewField}
-              className={`${styles['submit']} mr-4`}
+              className={`${styles['submit']} mr-2 mb-2`}
             >
               <FontAwesomeIcon icon={faCirclePlus} className="mr-2" /> Add Field
             </button>
