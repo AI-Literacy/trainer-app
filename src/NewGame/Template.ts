@@ -8,6 +8,7 @@ export interface GameTemplate {
   started: boolean;
   
   gameCode: string;
+  question: string;
   viewsPerCard: number;
   cardsPerPlayer: number;
 

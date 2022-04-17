@@ -34,22 +34,22 @@ export async function makeNewGame(
   template: GameTemplate,
   uid: string
 ): Promise<boolean> {
-  const { gameCode, started, viewsPerCard, cardsPerPlayer, fields } = template;
+  const { gameCode, started, viewsPerCard, cardsPerPlayer, fields, question } = template;
 
   // Validate parameters
   const gameCodeError = await validateGameCode(gameCode);
   if (gameCodeError) return false;
   if (!(1 <= viewsPerCard && viewsPerCard <= 100)) return false;
   if (!(1 <= cardsPerPlayer && cardsPerPlayer <= 10)) return false;
-  
   const minMaxValid = Object.values(fields)
     .map(field => field.min < field.max)
     .reduce((a, b) => a && b, true);
   if (!minMaxValid) return false;
-
   if (started) return false;
+  if (!question) return false;
 
   // Push the game to the database
+  // 1. Change user's active game
   const db = getFirestore();
   await setDoc(
     doc(db, 'users', uid),
@@ -57,17 +57,21 @@ export async function makeNewGame(
     { merge: true }
   )
 
+  // 2. Push the game metadata to the database
+  let docVal: any = {
+    owner: uid,
+    createdAt: serverTimestamp(),
+    ...template
+  };
+  delete docVal['gameCode'];
+  delete docVal['fields'];
+
   await setDoc(
     doc(db, 'games', gameCode),
-    {
-      owner: uid,
-      createdAt: serverTimestamp(),
-      viewsPerCard,
-      cardsPerPlayer,
-      started
-    }
+    docVal
   );
 
+  // 3. Push the game fields to the database
   await setDoc(
     doc(db, 'games', gameCode, 'private', 'objectTemplates'),
     fields

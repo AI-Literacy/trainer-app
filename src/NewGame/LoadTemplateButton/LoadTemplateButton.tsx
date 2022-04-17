@@ -7,18 +7,14 @@ import { GameField } from "../Template";
 import styles from '../../App/Form.module.css';
 import templateButtonStyles from './LoadTemplateButton.module.css';
 import { collection, DocumentData, getDocs, getFirestore, QueryDocumentSnapshot } from "firebase/firestore";
+import TemplatePartial from "./TemplatePartial";
 
 interface LoadTemplateButtonProps {
-  loadSample: (sample: { [x: string]: GameField }) => void
-}
-
-interface FirebaseTemplate {
-  name: string,
-  fields: { [x: string]: GameField }
+  loadSample: (sample: TemplatePartial) => void
 }
 
 const LoadTemplateButton = ({ loadSample }: LoadTemplateButtonProps) => {
-  const [templates, setTemplates] = useState<FirebaseTemplate[]>([]);
+  const [templates, setTemplates] = useState<TemplatePartial[]>([]);
   const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -31,7 +27,7 @@ const LoadTemplateButton = ({ loadSample }: LoadTemplateButtonProps) => {
       let templateRefs: QueryDocumentSnapshot<DocumentData>[] = [];
       templateQuery.forEach(d => templateRefs.push(d));
 
-      let newTemplates: FirebaseTemplate[] = [];
+      let newTemplates: TemplatePartial[] = [];
       for (const d of templateRefs) {
         let fields = {};
         const fieldsQuery = await getDocs(collection(db, 'templates', d.id, 'fields'));
@@ -40,7 +36,7 @@ const LoadTemplateButton = ({ loadSample }: LoadTemplateButtonProps) => {
         newTemplates.push({
           fields,
           ...d.data()
-        } as FirebaseTemplate)
+        } as TemplatePartial)
       }
       setTemplates(newTemplates);
     })()
@@ -74,7 +70,7 @@ const LoadTemplateButton = ({ loadSample }: LoadTemplateButtonProps) => {
           {
             templates.map((t, i) => (
               <li key={`template-${i}`}>
-                <button onClick={() => loadSample(t.fields)}>{t.name}</button>
+                <button onClick={() => loadSample(t)}>{t.name}</button>
               </li>
             ))
           }
