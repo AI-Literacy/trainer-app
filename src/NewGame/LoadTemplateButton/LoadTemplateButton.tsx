@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-
-import { GameField } from "../Template";
+import { 
+  collection, 
+  DocumentData, 
+  getDocs, 
+  getFirestore, 
+  QueryDocumentSnapshot 
+} from "firebase/firestore";
 
 import styles from '../../App/Form.module.css';
 import templateButtonStyles from './LoadTemplateButton.module.css';
-import { collection, DocumentData, getDocs, getFirestore, QueryDocumentSnapshot } from "firebase/firestore";
 import TemplatePartial from "./TemplatePartial";
 
 interface LoadTemplateButtonProps {
