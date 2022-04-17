@@ -61,6 +61,7 @@ const LoadTemplateButton = ({ loadSample }: LoadTemplateButtonProps) => {
     <>
       <button
         id="loadTemplate"
+        type='button'
         className={`${styles['submit']} mr-2 mb-2`}
         onClick={() => setOptionsOpen(true)}
       >
@@ -74,7 +75,7 @@ const LoadTemplateButton = ({ loadSample }: LoadTemplateButtonProps) => {
           {
             templates.map((t, i) => (
               <li key={`template-${i}`}>
-                <button onClick={() => loadSample(t)}>{t.name}</button>
+                <button type='button' onClick={() => loadSample(t)}>{t.name}</button>
               </li>
             ))
           }

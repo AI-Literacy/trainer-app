@@ -59,6 +59,7 @@ const GameFieldInput = ({ field, setField, deleteSelf }: GameFieldProps) => {
         className={`absolute top-0 right-0 ${gfstyles.close}`} 
         onClick={deleteSelf}
         aria-label="delete field"
+        type='button'
       >
         <FontAwesomeIcon size={'lg'} icon={faXmarkCircle} />
       </button>

@@ -168,12 +168,14 @@ const NewGame = () => {
             <button 
               onClick={addNewField}
               className={`${styles['submit']} mr-2 mb-2`}
+              type='button'
             >
               <FontAwesomeIcon icon={faCirclePlus} className="mr-2" /> Add Field
             </button>
             <button 
               onClick={handleSubmit} 
               className={styles['submit']}
+              type='button'
             >
               Submit
             </button>

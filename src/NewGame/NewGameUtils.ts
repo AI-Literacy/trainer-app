@@ -93,7 +93,7 @@ export async function makeNewGame(
 
   // 3. Push the game fields to the database
   await setDoc(
-    doc(db, 'games', gameCode, 'private', 'objectTemplates'),
+    doc(db, 'games', gameCode, 'private', 'fields'),
     fields
   )
 
