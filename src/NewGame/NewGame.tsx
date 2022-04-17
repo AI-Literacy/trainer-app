@@ -156,8 +156,8 @@ const NewGame = () => {
           </div>
         </form>
       </div>
-      <div className="hidden md:flex md:w-1/2 flex-col justify-center items-end">
-        <img className="w-4/5 mb-6" style={{ maxHeight: '60%' }} src="/img/new-game.svg" alt="" />
+      <div className="hidden md:flex md:w-1/2 flex-col justify-start items-end">
+        <img className="w-4/5 mb-6 mt-6" style={{ maxWidth: '50%' }} src="/img/new-game.svg" alt="" />
       </div>
     </div>
   );
