@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { Subject } from "rxjs";
 
 import { GameField } from "../Template";
-import styles from '../../App/Form.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+
+import styles from '../../App/Form.module.css';
+import gfstyles from './GameFieldInput.module.css';
 
 interface GameFieldProps {
   field: GameField,
@@ -27,8 +29,8 @@ const GameFieldInput = ({ field, setField, deleteSelf }: GameFieldProps) => {
     }
 
   return (
-    <div className="mb-4 text-xl border rounded p-3 flex flex-row">
-      <div className="flex flex-col w-full md:w-11/12">
+    <div className="mb-4 text-xl border rounded p-3 relative">
+      <div className="flex flex-col w-full">
         <p>
           Randomly generate a field titled 
           <input 
@@ -53,11 +55,13 @@ const GameFieldInput = ({ field, setField, deleteSelf }: GameFieldProps) => {
           />.
         </p>
       </div>
-      <div className="flex flex-col justify-center w-full md:w-1/12 border-l ">
-        <button onClick={deleteSelf}>
-          <FontAwesomeIcon icon={faTrash} />
-        </button>
-      </div>
+      <button 
+        className={`absolute top-0 right-0 ${gfstyles.close}`} 
+        onClick={deleteSelf}
+        aria-label="delete field"
+      >
+        <FontAwesomeIcon size={'lg'} icon={faXmarkCircle} />
+      </button>
     </div>
   );
 };
