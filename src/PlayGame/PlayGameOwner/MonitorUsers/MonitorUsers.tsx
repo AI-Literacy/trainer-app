@@ -37,7 +37,7 @@ const MonitorUsers = () => {
     e.preventDefault();
 
     // 1. Generate the cards
-    const numPlayers = players.length;
+    // const numPlayers = players.length;
 
     // 2. Assign the cards to users
   }
