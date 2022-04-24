@@ -46,12 +46,12 @@ const Nav = () => {
             className="rounded-full h-8 w-8 mr-2"
           />
           {user.displayName}
-          <div className={`${styles.dropdown} ${ dropShowing ? '' : 'hidden' }`}>
-            <ul aria-label="options">
-              <li><button onClick={signOutFn}>Logout</button></li>
-            </ul>
-          </div>
         </button>
+        <div className={`${styles.dropdown} ${dropShowing ? '' : 'hidden'}`}>
+          <ul aria-label="options">
+            <li><button onClick={signOutFn}>Logout</button></li>
+          </ul>
+        </div>
       </div>
     </nav>
   )
