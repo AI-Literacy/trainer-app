@@ -74,11 +74,16 @@ export async function makeNewGame(
 
   // 1. Change user's active game
   const db = getFirestore();
-  await setDoc(
-    doc(db, 'users', uid),
-    { activeGame: gameCode },
-    { merge: true }
-  )
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      { activeGame: gameCode },
+      { merge: true }
+    )
+  }
+  catch (err) {
+    return error('You already have an active game');
+  }
 
   // 2. Push the game metadata to the database
   let docVal: any = {

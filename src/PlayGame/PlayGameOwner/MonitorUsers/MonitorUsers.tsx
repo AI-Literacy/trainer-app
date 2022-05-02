@@ -1,8 +1,15 @@
-import { collection, getFirestore, onSnapshot, query, Timestamp } from "firebase/firestore";
+import { 
+  collection, 
+  getFirestore, 
+  onSnapshot, 
+  query, 
+  Timestamp 
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PlayerCard from "./PlayerCard";
 import styles from '../../../App/Form.module.css';
+import startGame from './StartGame';
 
 interface Player {
   uid: string,
@@ -33,13 +40,9 @@ const MonitorUsers = () => {
     return unsub;
   }, [gid])
 
-  const startGame = (e: React.FormEvent) => {
+  const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // 1. Generate the cards
-    // const numPlayers = players.length;
-
-    // 2. Assign the cards to users
+    startGame(players, gid!);
   }
 
   return (
@@ -51,7 +54,7 @@ const MonitorUsers = () => {
         }
       </div>
       <div className="mt-4 flex flex-row justify-center">
-        <button onClick={startGame} className={styles.submit}>Start game!</button>
+        <button onClick={handleStart} className={styles.submit}>Start game!</button>
       </div>
     </div>
   );
