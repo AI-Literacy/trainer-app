@@ -74,15 +74,6 @@ export async function makeNewGame(
     cardsPerPlayer, fields, started} = template;
   console.log(fields);
 
-  // generateCards
-  const cards = generateCards(25, viewsPerCard, cardsPerPlayer, fields)
-
-  // split cards per user
-  // get collection of users
-  let users = new Array('25')
-  assignCards(users, cards, cardsPerPlayer);
-
-  // calculate number of cards
   // 1. Change user's active game
   const db = getFirestore();
   await setDoc(
