@@ -53,7 +53,8 @@ const PlayGameStarted = () => {
   
   if (invalid) return <InvalidGame />;
   if (loading) return <LoadingOverlay />;
-  return (<p>Cards: {cards}</p>);
+  console.log(cards);
+  return (<p>Cards: </p>);
 };
 
 export default PlayGameStarted;
