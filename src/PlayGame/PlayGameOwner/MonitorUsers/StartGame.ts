@@ -1,4 +1,5 @@
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { useResolvedPath } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
 import { GameField } from '../../../NewGame/Template';
@@ -47,15 +48,12 @@ export default async function startGame(
     assignments[player.uid] = [];
   }
 
-  for (let i = 0; i < numCards; i++) {
-    let numPlayersForCard = 0;
+  for (let p = 0; p < players.length; p++){
+    for (let i = 0; i < cardsPerPlayer; i++){
+      let cardIndex = ((p*cardsPerPlayer)+i) % numCards;
 
-    for (const player of players) {
-      if (numPlayersForCard === viewsPerCard) break;
-      if (assignments[player.uid].length === cardsPerPlayer) continue;
-
-      assignments[player.uid].push({ id: ids[i], fields: cards[i], rating: null });
-      numPlayersForCard++;
+      // assign card to user and vice versa
+      assignments[players[p].uid].push({ id: ids[cardIndex], fields: cards[cardIndex], rating: null });
     }
   }
 
