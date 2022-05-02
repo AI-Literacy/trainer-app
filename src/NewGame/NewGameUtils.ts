@@ -73,7 +73,14 @@ export async function makeNewGame(
   const { gameCode, question, viewsPerCard, 
     cardsPerPlayer, fields, started} = template;
   console.log(fields);
+
+  // generateCards
   const cards = generateCards(25, viewsPerCard, cardsPerPlayer, fields)
+
+  // split cards per user
+  // get collection of users
+  let users = new Array('25')
+  assignCards(users, cards, cardsPerPlayer);
 
   // calculate number of cards
   // 1. Change user's active game
@@ -109,30 +116,6 @@ function generateCards(numStudents: number, viewsPerCard: number, cardsPerPlayer
     viewsPerCard = numStudents;
   }
   let numCards = Math.floor((cardsPerPlayer * numStudents)/ viewsPerCard);
-
-  // METHOD 1:
-  // * populate a card with random values for each field
-  // * if that value combination is the same as another card, redo
-  //
-  // let cards = new Array(0);
-
-  // for (let i = 0; i < numCards; i++){
-  //   let newCard = Object.create(null);
-  //   let unique = false;
-  //   while (!unique){
-  //     for(const field of Object.keys(fields)){
-  //       newCard[field] = getRandomInt(fields[field]['min'], fields[field]['max']);
-  //     }
-  //     unique = true;
-  //     for(const card of cards){
-  //       if (cardsEqual(newCard,card, fields)){
-  //         unique = false;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   cards.push(newCard)
-  // }
 
   // METHOD 2:
   // * give each card random value for field 1
@@ -177,8 +160,25 @@ function generateCards(numStudents: number, viewsPerCard: number, cardsPerPlayer
     fieldNum ++;
   }
   
-  console.log(cards);
   return cards;
+}
+
+// rough code
+function assignCards(users: Array<any>, cards: Array<any>, cardsPerPlayer: number){
+  let numCards = cards.length;
+  users.forEach((element, index) => { 
+    for(let i = 0; i < cardsPerPlayer; i++){
+      let cardIndex = ((index*cardsPerPlayer)+i) % numCards;
+
+      // assing the card to the user
+      cards[cardIndex].user = element;
+
+      // assign the user to the card
+      element.card = cards[cardIndex]
+    }
+   })
+  
+
 }
 
 function getRandomInt(min: number, max: number) {
