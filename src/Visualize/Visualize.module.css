@@ -1,0 +1,5 @@
+.dropCSV {
+  @apply p-6 mt-4;
+  @apply border rounded border-dashed border-white;
+  @apply flex flex-row justify-around items-center;
+}

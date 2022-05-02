@@ -16,6 +16,7 @@ import MainPage from '../MainPage';
 import NewGame from '../NewGame';
 import JoinGame from '../JoinGame';
 import PlayGame from '../PlayGame';
+import Visualize from '../Visualize';
 
 function App() {
   const [user, setUser] = useState<any>(null);
@@ -64,6 +65,7 @@ function App() {
           <Route path='/new-game' element={<NewGame />} />
           <Route path='/join-game' element={<JoinGame />} />
           <Route path='/game/:gid' element={<PlayGame />} />
+          <Route path='/visualize' element={<Visualize />} />
         </Routes>
       </Router>
     </UserContext.Provider>
