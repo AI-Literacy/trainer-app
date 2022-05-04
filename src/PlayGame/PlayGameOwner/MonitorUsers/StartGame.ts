@@ -1,5 +1,4 @@
 import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
-import { useResolvedPath } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
 import { GameField } from '../../../NewGame/Template';
