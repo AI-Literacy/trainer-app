@@ -1,14 +1,16 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../App/UserContext";
 import styles from './MainPage.module.css';
 
 const MainPage = () => {
   const user = useContext(UserContext);
-
-  if (!user) {
-    return null;
-  }
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (user?.activeGame) navigate(`/game/${user.activeGame}`)
+  }, [user, navigate]);
+  if (!user) return null;
 
   return (
     <div className="app flex flex-col justify-around h-5/6 align-middle mt-8">

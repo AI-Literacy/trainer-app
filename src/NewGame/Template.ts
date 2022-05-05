@@ -6,6 +6,7 @@ export interface GameField {
 
 export interface GameTemplate {
   started: boolean;
+  complete: boolean;
   
   gameCode: string;
   question: string;

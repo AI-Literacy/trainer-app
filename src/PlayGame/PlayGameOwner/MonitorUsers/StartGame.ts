@@ -52,7 +52,11 @@ export default async function startGame(
       let cardIndex = ((p*cardsPerPlayer)+i) % numCards;
 
       // assign card to user and vice versa
-      assignments[players[p].uid].push({ id: ids[cardIndex], fields: cards[cardIndex], rating: null });
+      assignments[players[p].uid].push({ 
+        id: ids[cardIndex], 
+        fields: cards[cardIndex], 
+        rating: null
+      });
     }
   }
 
@@ -67,7 +71,18 @@ export default async function startGame(
     );
   }
 
-  // 6. Start the game
+  // 6. Save the cards to the database
+  let cardIds: {[x: string]: Card} = {};
+  for (let i = 0; i < cards.length; i++) {
+    cardIds[ids[i]] = cards[i];
+  }
+
+  await setDoc(
+    doc(db, 'games', gid, 'private', 'cards'), 
+    cardIds
+  )
+
+  // 7. Start the game
   await setDoc(doc(db, 'games', gid), { started: true }, { merge: true });
 }
 

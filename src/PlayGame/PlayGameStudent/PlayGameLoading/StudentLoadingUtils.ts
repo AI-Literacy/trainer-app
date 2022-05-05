@@ -7,6 +7,10 @@ export function addSelfToGame(gid: string, user: User) {
     doc(db, 'games', gid, 'players', user.uid),
     { signedInAt: serverTimestamp(), name: user.displayName, img: user.photoURL }
   )
+
+  setDoc(
+    doc(db, 'users', user.uid), { activeGame: gid }, { merge: true }
+  )
 }
 
 export function removeSelfFromGame(gid: string, user: User) {

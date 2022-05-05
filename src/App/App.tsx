@@ -10,7 +10,7 @@ import {
 import './App.css';
 
 import Nav from '../Nav';
-import UserContext from './UserContext';
+import UserContext, { GameUser } from './UserContext';
 import LoadingOverlay from '../LoadingOverlay';
 import MainPage from '../MainPage';
 import NewGame from '../NewGame';
@@ -32,21 +32,24 @@ function App() {
           const db = getFirestore();
           const userData = await getDoc(doc(db, 'users', newUser.uid));
 
+          let updatedUser;
           if (userData.exists()) {
             // Update the user with the information from the database
-            newUser = {...newUser, ...userData.data()}
+            updatedUser = {...newUser, ...userData.data()} as GameUser;
           } else {
             // Create a new document in the database
             setDoc(
               doc(db, 'users', newUser.uid),
               {
                 'displayName': newUser.displayName,
+                'img': newUser.photoURL,
                 'activeGame': ''
               }
             )
+            updatedUser = {...newUser, activeGame: ''} as GameUser;
           }
-
-          setUser(newUser);
+            
+          setUser(updatedUser);
           setLoading(false);
         }
       } else {

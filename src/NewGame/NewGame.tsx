@@ -50,7 +50,7 @@ const NewGame = () => {
     e.preventDefault();
 
     const success = await makeNewGame(
-      { gameCode, question, viewsPerCard, cardsPerPlayer, fields, started: false }, 
+      { gameCode, question, viewsPerCard, cardsPerPlayer, fields, started: false, complete: false }, 
       user!.uid
     );
 
