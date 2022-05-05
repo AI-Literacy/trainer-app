@@ -1,15 +1,17 @@
-import { collection, getFirestore, onSnapshot, query } from "firebase/firestore";
+import { collection, doc, getFirestore, onSnapshot, query, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ProgressCard from "./ProgressCard";
 import styles from '../../../App/Form.module.css';
+import aggregateResults from "./AggregateResults";
 
 interface UserProgress {
   name: string,
   img: string,
   cardsRated: number,
-  cardsTotal: number
+  cardsTotal: number,
+  ratings: {[cid: string]: boolean | null}
 }
 
 const MonitorProgress = () => {
@@ -38,9 +40,12 @@ const MonitorProgress = () => {
 
           const cardsTotal = data.cards.length;
 
+          let ratings: {[cid: string]: boolean | null} = {};
+          data.cards.forEach((card: any) => ratings[card.id] = card.rating);
+
           setUserProgress(u => ({
             ...u,
-            [d.id]: { name: data.name, img: data.img, cardsRated, cardsTotal }
+            [d.id]: { name: data.name, img: data.img, cardsRated, cardsTotal, ratings }
           }))
         });
       }
@@ -49,11 +54,22 @@ const MonitorProgress = () => {
     return unsub;
   }, [gid]);
 
+  const handleEndGame = async () => {
+    if (!gid) return;
+
+    const results = aggregateResults(gid, userProgress);
+    setDoc(
+      doc(getFirestore(), 'games', gid),
+      { results, complete: true },
+      { merge: true }
+    )
+  }
+
   return (
     <div className="w-4/5 flex flex-col p-3 mx-auto">
       <h1 className="text-3xl self-center mt-3 mb-3">Player Progress</h1>
       <div className="self-center mt-3 mb-3">
-        <button className={styles.submit}>End game</button>
+        <button className={styles.submit} onClick={handleEndGame}>End game</button>
       </div>
       <div>
         {
