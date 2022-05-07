@@ -55,7 +55,7 @@ export default async function startGame(
       assignments[players[p].uid].push({ 
         id: ids[cardIndex], 
         fields: cards[cardIndex], 
-        rating: null
+        rating: null,
       });
     }
   }
@@ -105,7 +105,8 @@ function makeCardsArray(fields: {[x: string]: GameField }, numCards: number) {
         // pick random value
         cards[c][field] = {
           name: fields[field].name,
-          value: getRandomInt(fields[field]['min'], fields[field]['max'])
+          value: getRandomInt(fields[field]['min'], fields[field]['max']),
+          max: fields[field].max
         };
         unique = true;
 

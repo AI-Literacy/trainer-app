@@ -1,10 +1,11 @@
 import { collection, doc, getFirestore, onSnapshot, query, setDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ProgressCard from "./ProgressCard";
 import styles from '../../../App/Form.module.css';
 import aggregateResults from "./AggregateResults";
+import { UserContext } from "../../../App";
 
 interface UserProgress {
   name: string,
@@ -18,6 +19,7 @@ const MonitorProgress = () => {
   const [userProgress, setUserProgress] = useState<{[x: string]: UserProgress}>({});
 
   const { gid } = useParams();
+  const user = useContext(UserContext);
 
   // Update player ids
   useEffect(() => {
@@ -55,12 +57,18 @@ const MonitorProgress = () => {
   }, [gid]);
 
   const handleEndGame = async () => {
-    if (!gid) return;
+    if (!gid || !user) return;
 
     const results = aggregateResults(gid, userProgress);
+    const players = [...Object.keys(userProgress), user?.uid];
     setDoc(
       doc(getFirestore(), 'games', gid),
-      { results, complete: true },
+      { results, complete: true, players },
+      { merge: true }
+    )
+    setDoc(
+      doc(getFirestore(), 'users', user.uid),
+      { activeGame: '' },
       { merge: true }
     )
   }

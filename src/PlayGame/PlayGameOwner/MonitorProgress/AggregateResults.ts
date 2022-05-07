@@ -20,13 +20,12 @@ export default function aggregateResults(
   Object.values(cardRatings)
     .forEach(r => {
       for (let i = 0; i < r.length; i++) {
-        if (r[i] == null) r[i] = undefined;
-        else r[i] = r[i] ? 1 : 0;
+        if (r[i] != null) r[i] = r[i] ? 1 : 0;
       }
     })
-  let reducedRatings = cardRatings as { [cid: string]: (number | undefined)[] };
+  let reducedRatings = cardRatings as { [cid: string]: (number | null)[] };
 
-  let out: { [cid: string]: { ratings: (number | undefined)[], vote: number } } = {};
+  let out: { [cid: string]: { ratings: (number | null)[], vote: number } } = {};
   Object.keys(cardRatings)
     .forEach(cid => {
       const votesInFavor = reducedRatings[cid]

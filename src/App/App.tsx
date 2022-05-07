@@ -69,6 +69,7 @@ function App() {
           <Route path='/join-game' element={<JoinGame />} />
           <Route path='/game/:gid' element={<PlayGame />} />
           <Route path='/visualize' element={<Visualize />} />
+          <Route path='/visualize/:gid' element={<Visualize />} />
         </Routes>
       </Router>
     </UserContext.Provider>

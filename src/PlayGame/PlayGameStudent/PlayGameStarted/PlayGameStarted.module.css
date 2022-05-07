@@ -1,0 +1,35 @@
+.yes {
+    @apply border border-transparent;
+    @apply text-base font-medium rounded-md;
+    @apply text-white bg-emerald-500 hover:bg-emerald-600;
+    @apply py-2 px-4;
+    @apply md:py-2 md:text-lg md:px-6;
+}
+
+.no {
+    @apply border border-transparent;
+    @apply text-base font-medium rounded-md;
+    @apply text-white bg-rose-500 hover:bg-rose-600;
+    @apply py-2 px-4;
+    @apply md:py-2 md:text-lg md:px-6;
+}
+
+.yes_selected {
+    @apply border border-transparent;
+    @apply text-base font-medium rounded-md;
+    @apply text-white bg-emerald-800 hover:bg-emerald-800;
+    @apply py-2 px-4;
+    @apply md:py-2 md:text-lg md:px-6;
+    @apply cursor-default;
+    @apply ring ring-teal-200;
+}
+
+.no_selected {
+    @apply border border-transparent;
+    @apply text-base font-medium rounded-md;
+    @apply text-white bg-rose-800 hover:bg-rose-800;
+    @apply py-2 px-4;
+    @apply md:py-2 md:text-lg md:px-6;
+    @apply cursor-default;
+    @apply ring ring-teal-200;
+}

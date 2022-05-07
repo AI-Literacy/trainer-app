@@ -1,6 +1,6 @@
 import { getFirestore, onSnapshot, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LoadingOverlay from "../../LoadingOverlay";
 import MonitorProgress from "./MonitorProgress";
 import MonitorUsers from "./MonitorUsers";
@@ -8,6 +8,7 @@ import MonitorUsers from "./MonitorUsers";
 const PlayGameOwner = () => {
   const [started, setStarted] = useState<boolean | null>(null);
   const { gid } = useParams();
+  const navigate = useNavigate();
   
   useEffect(() => {
     if (!gid) return;
@@ -19,12 +20,13 @@ const PlayGameOwner = () => {
         const data = doc.data();
 
         if (!data) return;
-        setStarted(data.started)
+        if (data.complete) navigate(`/visualize/${gid}`);
+        setStarted(data.started);
       }
     )
 
     return () => unsub();
-  }, [gid]);
+  }, [gid, navigate]);
   
   if (started == null) return <LoadingOverlay />;
   if (started) return <MonitorProgress />;
