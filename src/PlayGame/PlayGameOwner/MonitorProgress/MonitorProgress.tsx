@@ -1,4 +1,4 @@
-import { collection, doc, getFirestore, onSnapshot, query, setDoc } from "firebase/firestore";
+import { arrayUnion, collection, doc, getFirestore, onSnapshot, query, setDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -68,7 +68,7 @@ const MonitorProgress = () => {
     )
     setDoc(
       doc(getFirestore(), 'users', user.uid),
-      { activeGame: '' },
+      { activeGame: '', gameHistory: arrayUnion(gid) },
       { merge: true }
     )
   }

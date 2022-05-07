@@ -83,7 +83,7 @@ const NewGame = () => {
   
   return (
     <div className="app w-4/5 mt-8 mx-auto flex flex-row">
-      <div className="flex flex-col w-full h-full md:w-1/2 mb-40 ">
+      <div className="flex flex-col w-full h-full md:w-2/3 mb-40 ">
         <h1 className="text-4xl mb-8">Create a new game</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -182,7 +182,7 @@ const NewGame = () => {
           </div>
         </form>
       </div>
-      <div className="hidden md:flex md:w-1/2 flex-col justify-start items-end">
+      <div className="hidden md:flex flex-1 flex-col justify-start items-end">
         <img className="w-4/5 mb-6 mt-6" style={{ maxWidth: '50%' }} src="/img/new-game.svg" alt="" />
       </div>
     </div>

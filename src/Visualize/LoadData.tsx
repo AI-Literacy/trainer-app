@@ -4,13 +4,14 @@ import { useRef, useState } from "react";
 import Papa from 'papaparse';
 
 import styles from './Visualize.module.css';
+import SearchPreviousGames from "./SearchPreviousGames";
 
 interface UploadProps {
   setData: (data: any[]) => void
 }
 
 
-const DropCSV = ({ setData }: UploadProps) => {
+const LoadData = ({ setData }: UploadProps) => {
   const [error, setError] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -73,12 +74,18 @@ const DropCSV = ({ setData }: UploadProps) => {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <FontAwesomeIcon icon={faUpload} size={'4x'} />
-        <p className="text-4xl">Drag a CSV file here</p>
+        <div className="flex flex-col w-16 justify-center items-center">
+          <FontAwesomeIcon icon={faUpload} size={'4x'} />
+        </div>
+        <div className="flex flex-col flex-1 items-center">
+          <p className="text-4xl">Drop a CSV file here</p>
+          <p className="text-4xl mt-4 mb-4">or</p>
+          <SearchPreviousGames />
+        </div>
       </div>
       { error ? (<p className="text-center text-2xl text-red-500 mt-4">{error}</p>) : null }
     </>
   );
 }
 
-export default DropCSV;
+export default LoadData;

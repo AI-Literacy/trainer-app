@@ -1,5 +1,42 @@
 .dropCSV {
   @apply p-6 mt-4;
   @apply border rounded border-dashed border-white;
-  @apply flex flex-row justify-around items-center;
+  @apply flex flex-row items-center;
+}
+
+.downloadCSV {
+  @apply p-6 mt-4;
+  @apply border rounded border-white;
+  @apply flex flex-row items-center;
+  @apply cursor-pointer;
+  @apply hover:bg-white hover:bg-opacity-25;
+}
+
+.input {
+  @apply w-full text-4xl text-center rounded-lg;
+  @apply border-gray-300 shadow-sm;
+  @apply focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50;
+  @apply text-black;
+}
+
+.dropdown {
+  @apply z-10 w-full;
+  @apply bg-white rounded divide-y;
+  @apply divide-gray-100 shadow dark:bg-gray-600;
+
+  position: absolute;
+  right: 0;
+  margin: 0px; 
+  transform: translate(0, 65px);
+}
+
+.dropdown ul {
+  @apply py-1 text-sm text-gray-700 dark:text-gray-200;
+}
+
+.dropdown ul li button {
+  @apply flex flex-row justify-between items-center;
+  @apply w-full text-left text-xl;
+  @apply py-2 px-4 hover:bg-gray-100;
+  @apply dark:hover:bg-gray-500 dark:hover:text-white;
 }

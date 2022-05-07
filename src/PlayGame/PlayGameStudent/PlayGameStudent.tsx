@@ -1,4 +1,4 @@
-import { getFirestore, doc, onSnapshot } from "firebase/firestore";
+import { getFirestore, doc, onSnapshot, setDoc, arrayUnion } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../App";
@@ -14,17 +14,23 @@ const PlayGameStudent = () => {
   const user = useContext(UserContext);
 
   useEffect(() => {
-    if (!gid) return;
+    if (!gid || !user) return;
 
     const db = getFirestore();
     const unsub = onSnapshot(
       doc(db, 'games', gid),
-      doc => {
-        const data = doc.data();
+      d => {
+        const data = d.data();
         
         if (!data) return;
         if (data.complete) {
           removeActiveGame(user);
+          // TODO: Eventually, this all needs to be done with a Firebase function
+          setDoc(
+            doc(db, 'users', user.uid),
+            { gameHistory: arrayUnion(gid) },
+            { merge: true }
+          )
           navigate(`/visualize/${gid}`);
         }
         

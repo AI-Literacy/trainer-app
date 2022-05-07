@@ -1,8 +1,9 @@
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import DropCSV from "./DropCSV";
+import LoadData from "./LoadData";
 import Graph from "./Graph";
+import DownloadData from "./DownloadData";
 
 interface Results {
   [cid: string]: {
@@ -56,7 +57,7 @@ const Visualize = () => {
 
   return (
     <div className="w-4/5 mx-auto">
-      <DropCSV setData={setData} />
+      { gid ? <DownloadData gid={gid} data={data} /> : <LoadData setData={setData} /> }
       {
         data.length === 0
         ? null

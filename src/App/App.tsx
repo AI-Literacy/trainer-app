@@ -43,7 +43,8 @@ function App() {
               {
                 'displayName': newUser.displayName,
                 'img': newUser.photoURL,
-                'activeGame': ''
+                'activeGame': '',
+                'gameHistory': []
               }
             )
             updatedUser = {...newUser, activeGame: ''} as GameUser;
