@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import PlayerCard from "./PlayerCard";
 import styles from '../../../App/Form.module.css';
 import startGame from './StartGame';
+import HashLoader from "react-spinners/HashLoader";
 
 interface Player {
   uid: string,
@@ -47,15 +48,24 @@ const MonitorUsers = () => {
 
   return (
     <div className="w-full flex flex-col p-3">
-      <h1 className="text-3xl self-center mt-3 mb-3">Players</h1>
+      <h1 className="text-3xl self-center mt-3">Game: {gid}</h1>
+      <p className="text-xl text-gray-400 self-center mt-1 mb-3">(waiting for players)</p>
       <div className="flex flex-row justify-around flex-wrap">
         {
-          players.map(player => <PlayerCard key={player.uid} player={player} />)
+          players.length === 0
+            ? (<div className="flex w-full h-full justify-center">
+              <div className="flex self-center">
+                <HashLoader color={'white'} size={150} />
+              </div>
+            </div>)
+          : players.map(player => <PlayerCard key={player.uid} player={player} />)
         }
       </div>
-      <div className="mt-4 flex flex-row justify-center">
-        <button onClick={handleStart} className={styles.submit}>Start game!</button>
-      </div>
+      {
+        players.length > 1 && (<div className="mt-4 flex flex-row justify-center">
+          <button onClick={handleStart} className={styles.submit}>Start game!</button>
+        </div>)
+      }
     </div>
   );
 }

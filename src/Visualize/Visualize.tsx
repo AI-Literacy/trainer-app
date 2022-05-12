@@ -32,7 +32,7 @@ const Visualize = () => {
       const gameRef = await getDoc(doc(getFirestore(), 'games', gid));
       const game: any = gameRef.data();
       const results: Results = game.results;
-
+      
       const cardRef = await getDoc(doc(getFirestore(), 'games', gid, 'private', 'cards'));
       const cards: Cards = cardRef.data() as Cards;
 
@@ -46,10 +46,13 @@ const Visualize = () => {
         )
 
         // Add rating
-        out['Vote'] = results[cid].vote;
-
-        newData.push(out);
+        if (results[cid]) {
+          out['Vote'] = results[cid].vote;
+          newData.push(out);
+        }
       });
+
+      console.log(newData);
 
       setData(newData);
     })();
