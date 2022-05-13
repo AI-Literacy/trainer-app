@@ -7,10 +7,12 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import HashLoader from "react-spinners/HashLoader";
+import QRCode from 'qrcode';
+
 import PlayerCard from "./PlayerCard";
 import styles from '../../../App/Form.module.css';
 import startGame from './StartGame';
-import HashLoader from "react-spinners/HashLoader";
 
 interface Player {
   uid: string,
@@ -21,6 +23,7 @@ interface Player {
 
 const MonitorUsers = () => {
   const [players, setPlayers] = useState<Player[]>([]);
+  const [qrData, setQRData] = useState('');
   const { gid } = useParams();
 
   useEffect(() => {
@@ -39,8 +42,12 @@ const MonitorUsers = () => {
     )
 
     return unsub;
-  }, [gid])
+  }, [gid]);
 
+  useEffect(() => {
+    QRCode.toDataURL(window.location.href, (err, url) => setQRData(url));
+  }, []);
+  
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
     startGame(players, gid!);
@@ -49,7 +56,7 @@ const MonitorUsers = () => {
   return (
     <div className="w-full flex flex-col p-3">
       <h1 className="text-3xl self-center mt-3">Game: {gid}</h1>
-      <p className="text-xl text-gray-400 self-center mt-1 mb-3">(waiting for players)</p>
+      <p className="text-xl text-gray-400 self-center mt-1 mb-3">(wait for all players to join before starting)</p>
       <div className="flex flex-row justify-around flex-wrap">
         {
           players.length === 0
@@ -61,8 +68,11 @@ const MonitorUsers = () => {
           : players.map(player => <PlayerCard key={player.uid} player={player} />)
         }
       </div>
+      <div className="flex flex-row justify-center items-center mt-4">
+        <img alt="" src={qrData} />
+      </div>
       {
-        players.length > 1 && (<div className="mt-4 flex flex-row justify-center">
+        players.length >= 1 && (<div className="mt-4 flex flex-row justify-center">
           <button onClick={handleStart} className={styles.submit}>Start game!</button>
         </div>)
       }
