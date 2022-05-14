@@ -1,0 +1,4 @@
+.close {
+  @apply bg-slate-700;
+  transform: translate(10px, -10px);
+}
