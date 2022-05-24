@@ -50,7 +50,7 @@ async function validateTemplate(template: GameTemplate) {
   const gameCodeError = await validateGameCode(gameCode);
   if (gameCodeError) return error(gameCodeError);
   if (!(1 <= viewsPerCard && viewsPerCard <= 100)) return error("Number of views per card must be between 1 and 100.");
-  if (!(1 <= cardsPerPlayer && cardsPerPlayer <= 10)) return error("Number of cards per player must be between 1 and 10.");
+  if (!(1 <= cardsPerPlayer && cardsPerPlayer <= 50)) return error("Number of cards per player must be between 1 and 50.");
   const minMaxValid = Object.values(fields)
     .map(field => field.min < field.max)
     .reduce((a, b) => a && b, true);
